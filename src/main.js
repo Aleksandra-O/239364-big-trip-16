@@ -6,21 +6,31 @@ import {createPointTemplate} from './view/point-view.js';
 
 import {renderTemplate, RenderPosition} from './render.js';
 import { createListFrameTemplate } from './view/list-frame.js';
+import { createListItemTemplate } from './view/list-item.js';
 
 const POINT_COUNT = 3;
+
+const createItemTemplate = (editing)=> editing?createEditPointTemplate():createPointTemplate();
+
+const renderItem = (container, editing)=>{
+  renderTemplate(container,createListItemTemplate(createItemTemplate(editing)),RenderPosition.BEFOREEND);
+}
+
+const renderItems = (container)=>{
+  Array.from({length:POINT_COUNT+1}).forEach((_,ix)=>renderItem(container,ix===0));
+}
+
+const renderList = (container)=>{
+  renderTemplate(container, createListFrameTemplate(), RenderPosition.BEFOREEND);
+  renderItems(container.querySelector('.trip-events__list'));
+}
+
+const renderTripEvents = (container)=>{
+  renderTemplate(container, createSiteSortTemplate(), RenderPosition.BEFOREEND);
+  renderList(container);
+}
 
 renderTemplate(document.querySelector('.trip-controls__navigation'), createSiteMenuTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(), RenderPosition.BEFOREEND);
 
-const siteMainElement = document.querySelector('.trip-events');
-
-renderTemplate(siteMainElement, createSiteSortTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(siteMainElement, createListFrameTemplate(), RenderPosition.BEFOREEND);
-
-const siteListElement = siteMainElement.querySelector('.trip-events__list');
-
-renderTemplate(siteListElement, createEditPointTemplate(), RenderPosition.BEFOREEND);
-
-for (let i = 0; i < POINT_COUNT; i++) {
-  renderTemplate(siteListElement, createPointTemplate(), RenderPosition.BEFOREEND);
-}
+renderTripEvents(document.querySelector('.trip-events'))
