@@ -14,7 +14,7 @@ renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilt
 const siteMainElement = document.querySelector('.trip-events');
 const siteListElement = siteMainElement.querySelector('.trip-events__list');
 
-renderTemplate(siteListElement, createSiteSortTemplate(), RenderPosition.BEFOREBEGIN);
+renderTemplate(siteMainElement, createSiteSortTemplate(), RenderPosition.BEFOREBEGIN);
 
 renderTemplate(siteListElement, createEditPointTemplate(), RenderPosition.AFTERBEGIN);
 
