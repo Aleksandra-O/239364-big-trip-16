@@ -3,24 +3,34 @@ import {createSiteFilterTemplate} from './view/site-filter-view.js';
 import {createSiteSortTemplate} from './view/site-sort-view.js';
 import {createEditPointTemplate} from './view/edit-point-view.js';
 import {createPointTemplate} from './view/point-view.js';
+import { createListFrameTemplate } from './view/list-frame.js';
+import { createListItemTemplate } from './view/list-item.js';
 
 import {renderTemplate, RenderPosition} from './render.js';
 
 const POINT_COUNT = 3;
 
-const siteHeaderElement = document.querySelector('.trip-main');
-const siteHeaderControlElement = siteHeaderElement.querySelector('.trip-controls');
+const createItemTemplate = (editing)=> editing?createEditPointTemplate():createPointTemplate();
 
-renderTemplate(siteHeaderControlElement, createSiteMenuTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteHeaderControlElement, createSiteFilterTemplate(), RenderPosition.BEFOREEND);
+const renderItem = (container, editing)=>{
+  renderTemplate(container,createListItemTemplate(createItemTemplate(editing)),RenderPosition.BEFOREEND);
+};
 
-const siteMainElement = document.querySelector('.trip-events');
-const siteListElement = siteMainElement.querySelector('.trip-events__list');
+const renderItems = (container)=>{
+  Array.from({length:POINT_COUNT+1}).forEach((_,ix)=>renderItem(container,ix===0));
+};
 
-renderTemplate(siteListElement, createSiteSortTemplate(), RenderPosition.BEFOREBEGIN);
+const renderList = (container)=>{
+  renderTemplate(container, createListFrameTemplate(), RenderPosition.BEFOREEND);
+  renderItems(container.querySelector('.trip-events__list'));
+};
 
-renderTemplate(siteListElement, createEditPointTemplate(), RenderPosition.AFTERBEGIN);
+const renderTripEvents = (container)=>{
+  renderTemplate(container, createSiteSortTemplate(), RenderPosition.BEFOREEND);
+  renderList(container);
+};
 
-for (let i = 0; i < POINT_COUNT; i++) {
-  renderTemplate(siteListElement, createPointTemplate(), RenderPosition.BEFOREEND);
-}
+renderTemplate(document.querySelector('.trip-controls__navigation'), createSiteMenuTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(), RenderPosition.BEFOREEND);
+
+renderTripEvents(document.querySelector('.trip-events'));
