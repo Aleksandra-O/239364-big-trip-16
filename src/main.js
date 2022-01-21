@@ -3,14 +3,14 @@ import {createSiteFilterTemplate} from './view/site-filter-view.js';
 import {createSiteSortTemplate} from './view/site-sort-view.js';
 import {createEditPointTemplate} from './view/edit-point-view.js';
 import {createPointTemplate} from './view/point-view.js';
-import { createListFrameTemplate } from './view/list-frame.js';
-import { createListItemTemplate } from './view/list-item.js';
-
+import {createListFrameTemplate } from './view/list-frame.js';
+import {createListItemTemplate } from './view/list-item.js';
 import {renderTemplate, RenderPosition} from './render.js';
+import {generateEvent} from './mock/trip-event.js';
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 15;
 
-const createItemTemplate = (editing)=> editing?createEditPointTemplate():createPointTemplate();
+const createItemTemplate = (editing)=> editing?createEditPointTemplate(generateEvent()):createPointTemplate(generateEvent());
 
 const renderItem = (container, editing)=>{
   renderTemplate(container,createListItemTemplate(createItemTemplate(editing)),RenderPosition.BEFOREEND);
