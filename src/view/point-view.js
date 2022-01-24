@@ -1,52 +1,51 @@
 import dayjs from 'dayjs';
-import flatpickr from "flatpickr";
 
 export const createPointTemplate = (tripEvent) => {
-  const {price, type, destination, date_from, date_to, isFavorite, offers} = tripEvent;
+  const {price, type, destination, dateFrom, dateTo, isFavorite, offers} = tripEvent;
 
-  const visDate = dayjs(date_from).format('MMM D');
-  const hidDate = dayjs(date_from).format('YYYY-MM-DD');
-  const startTime = dayjs(date_from).format('HH:mm');
-  const finishTime = dayjs(date_to).format('HH:mm');
-  const gapTime = new Date(+date_to-date_from-10800000);
+  const visDate = dayjs(dateFrom).format('MMM D');
+  const hidDate = dayjs(dateFrom).format('YYYY-MM-DD');
+  const startTime = dayjs(dateFrom).format('HH:mm');
+  const finishTime = dayjs(dateTo).format('HH:mm');
+  const gapDate = new Date(+dateTo-dateFrom-10800000);
   const formatGapTime = (gapTime) => {
     if (gapTime < 3600000) {
-      const interval = dayjs(gapTime).format('mm')+"M";
-      console.log(interval);
-      return;
-      
+      const intervalMin = String(dayjs(gapTime).format('mm'));
+      const interval = `${intervalMin}M`;
+      return interval;
     } else {
-      const interval = dayjs(gapTime).format('HH')+"H "+dayjs(gapTime).format('mm')+"M";
+      const intervalHours = String(dayjs(gapTime).format('HH'));
+      const intervalMin = String(dayjs(gapTime).format('mm'));
+      const interval = `${intervalHours}H ${intervalMin}M`;
       return interval;
     }
   };
 
-  const gapTimeTemplate = formatGapTime(gapTime);
+  const gapTimeTemplate = formatGapTime(gapDate);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
-    : 'event__favorite-btn'
-  ;
+    : 'event__favorite-btn';
 
-  const isCheckedOffer = (offers) => {
-    if (offers == null) {
-      return "";
+  const isCheckedOffer = (options) => {
+    if (options === null) {
+      return '';
     } else {
       return `<ul class="event__selected-offers">
-        ${offers.map((offer) => {
-          if (offer.isChecked == true) {return `<li class="event__offer">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-            </li>`
-          } else {
-            return '';
-          }
-        }).join('')
-        }
-      </ul>`
+${options.map((option) => {
+    if (option.isChecked === true) {return `<li class="event__offer">
+    <span class="event__offer-title">${option.title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${option.price}</span>
+    </li>`;
+    } else {
+      return '';
     }
-  }
+  }).join('')
+}
+      </ul>`;
+    }
+  };
 
   return `<div class="event">
         <time class="event__date" datetime="${hidDate}">${visDate}</time>
@@ -83,5 +82,5 @@ export const createPointTemplate = (tripEvent) => {
         <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
         </button>
-    </div>`
+    </div>`;
 };

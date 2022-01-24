@@ -17,17 +17,17 @@ const generateOffers = () => {
 
   const maxOptions = 4;
   const optionsGap = getRandomInteger(1, maxOptions);
-  const options = Array.from({length:optionsGap+1}).map(function(item, ix) {
-    const option = "option "+(ix+1);
+  const options = Array.from({length:optionsGap+1}).map((item, ix) => {
+    const option = `option ${ix+1}`;
     const optionPrice = getRandomInteger(1, 200);
-    const optionId = +ix+1
-  
+    const optionId = +ix+1;
+
     item = {
       id: optionId,
       title: option,
       price: optionPrice,
       isChecked: Boolean(getRandomInteger(0, 1))
-    }
+    };
     return item;
   });
 
@@ -41,11 +41,11 @@ const generateDestination = () => {
 
   const generateDescription = () => {
     const isDescription = Boolean(getRandomInteger(0, 1));
-  
+
     if (!isDescription) {
       return null;
     }
-  
+
     const descriptions = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -59,40 +59,39 @@ const generateDestination = () => {
       'Nunc fermentum tortor ac porta dapibus.',
       'In rutrum ac purus sit amet tempus.'
     ];
-  
+
     const randomQuantity = getRandomInteger(1, 5);
-    var description = "";
-  
+    let description = '';
+
     for (let i = 0; i < randomQuantity; i++) {
-      const randomIndex = getRandomInteger(0, descriptions.length - 1);
-      description = description + descriptions[randomIndex] + " ";
+      const randomDescIndex = getRandomInteger(0, descriptions.length - 1);
+      description = `${description}${descriptions[randomDescIndex]} `;
     }
-  
+
     return description;
   };
 
   const generatePhotos = () => {
     const isPhotos = Boolean(getRandomInteger(0, 1));
-  
+
     if (!isPhotos) {
       return null;
     }
-  
+
     const maxPhotos = 7;
     const photosGap = getRandomInteger(1, maxPhotos);
-    var pictures = [];
-    var picture = {};
-  
+    const pictures = [];
+
     for (let i = 0; i < photosGap; i++) {
-      var generateSrc = "http://picsum.photos/248/152?r=" + Math.random();
-      picture = {
+      const generateSrc = `http://picsum.photos/248/152?r=${Math.random()}`;
+      const picture = {
         src: generateSrc,
-        description: "description"
-      }
+        description: 'description'
+      };
 
       pictures.push(picture);
     }
-  
+
     return pictures;
   };
 
@@ -110,7 +109,7 @@ const generateStartDate = () => {
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
   const generateDateGap = getRandomInteger(0, 86400000);
   const startDate = dayjs().add(daysGap, 'day').add(generateDateGap, 'milliseconds').toDate();
-  
+
   return startDate;
 };
 
@@ -125,16 +124,16 @@ const maxPriceGap = 1250;
 
 export const generateEvent = () => {
   const offers = generateOffers();
-  const date_from = generateStartDate();
-  const date_to = genegateFinishDate(date_from);
+  const dateFrom = generateStartDate();
+  const dateTo = genegateFinishDate(dateFrom);
 
   return {
     type: generateType(),
-    date_from,
-    date_to,
+    dateFrom,
+    dateTo,
     price: getRandomInteger(0, maxPriceGap),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     offers,
     destination: generateDestination(),
-  }
+  };
 };

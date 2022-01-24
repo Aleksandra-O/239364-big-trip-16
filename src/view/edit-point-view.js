@@ -1,20 +1,20 @@
 import {PLACES, POINTTYPES} from '../const.js';
 import {editDateTemplate} from '../utils.js';
 
-const createTypeList = (POINTTYPES) => {
-  return `<div class="event__type-list">
+const createTypeList = (types) => (
+  `<div class="event__type-list">
     <fieldset class="event__type-group">
       <legend class="visually-hidden">Event type</legend>
 
-      ${POINTTYPES.map((type) => `<div class="event__type-item">
-        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
-      </div>`).join('')
-      }
+  ${types.map((type) => `<div class="event__type-item">
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
+  </div>`).join('')
+  }
 
     </fieldset>
   </div>`
-}
+);
 
 const createPrice = (price) => (
   `<div class="event__field-group  event__field-group--price">
@@ -26,90 +26,89 @@ const createPrice = (price) => (
   </div>`
 );
 
-const createDestination = (destination, PLACES) => {
-  if (destination == null) {
-    return "";
+const createDestination = (destination, places) => {
+  if (destination === null) {
+    return '';
   } else {
     return `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
     <datalist id="destination-list-1">
-      ${PLACES.map((place) => `<option value="${place}"></option>`).join('')}
-    </datalist>`
+      ${places.map((place) => `<option value="${place}"></option>`).join('')}
+    </datalist>`;
   }
-}
+};
 
 const createOffers = (offers) => {
-  if (offers == null) {
-    return "";
+  if (offers === null) {
+    return '';
   } else {
     return `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${offers.map((offer) => `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-${offer.id}" type="checkbox" name="event-offer-${offer.title}" ${offer.isChecked?'checked':''}>
-          <label class="event__offer-label" for="event-offer-${offer.title}-${offer.id}">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>`).join('')
-      }
+${offers.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-${offer.id}" type="checkbox" name="event-offer-${offer.title}" ${offer.isChecked?'checked':''}>
+    <label class="event__offer-label" for="event-offer-${offer.title}-${offer.id}">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`).join('')
+}
     </div>
-  </section>`
+  </section>`;
   }
 };
 
 const createDescription = (destination) => {
-  if (destination == null) {
-    return "";
+  if (destination === null) {
+    return '';
   } else {
-    if (destination.description != null || destination.pictures != null) {
+    if (destination.description !== null || destination.pictures !== null) {
 
-      const createPhotos = (destination) => {
-        const pictures = Array.from({length:destination.pictures.length}).map((elem,ix)=>{
-          return elem = {
-            src: destination.pictures[ix].src,
-            description: destination.pictures[ix].description
+      const createPhotos = (place) => {
+        const pictures = Array.from({length:place.pictures.length}).map((elem,ix)=>{
+          elem = {
+            src: place.pictures[ix].src,
+            description: place.pictures[ix].description
           };
+          return elem;
         });
-        
-        return pictures.map(function(picture) { return `
+
+        return pictures.map((picture) => (`
           <img class="event__photo" src="${picture.src}" alt="${picture.description}">
-        `}).join('');
-      }
-    
+        `)).join('');
+      };
+
       return `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        ${destination.description==null?'':`<p class="event__destination-description">${destination.description}</p>`}
-        ${destination.pictures==null?'':`
+        ${destination.description===null?'':`<p class="event__destination-description">${destination.description}</p>`}
+        ${destination.pictures===null?'':`
           <div class="event__photos-container">
             <div class="event__photos-tape">
             ${createPhotos(destination)}
           </div>`}
-      </section>`
+      </section>`;
     } else {
-      return "";
+      return '';
     }
   }
 };
 
-const createTime = (date_from, date_to) => {
-  return `<div class="event__field-group  event__field-group--time">
+const createTime = (dateFrom, dateTo) => (`<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${editDateTemplate(date_from)}">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${editDateTemplate(dateFrom)}">
     &mdash;
     <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${editDateTemplate(date_to)}">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${editDateTemplate(dateTo)}">
   </div>`
-}
+);
 
 export const createEditPointTemplate = (tripEvent = {}) => {
 
   const {
     type = 'bus',
-    date_from = "2019-07-10T22:55:56.845Z",
-    date_to = "2019-07-11T11:22:13.375Z",
+    dateFrom = '2019-07-10T22:55:56.845Z',
+    dateTo = '2019-07-11T11:22:13.375Z',
     price = 1100,
-    isFavorite = false,
     offers = null,
     destination = null,
   } = tripEvent;
@@ -119,8 +118,8 @@ export const createEditPointTemplate = (tripEvent = {}) => {
   const offersTemplate = createOffers(offers);
   const descriptionTemplate = createDescription(destination);
   const typeListTemplate = createTypeList(POINTTYPES);
-  const timeTemplate = createTime(date_from, date_to);
-  
+  const timeTemplate = createTime(dateFrom, dateTo);
+
   return   `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -142,10 +141,10 @@ export const createEditPointTemplate = (tripEvent = {}) => {
       ${timeTemplate}
       <!--<div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${date_from}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${date_to}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
       </div>-->
       
       ${priceTemplate}
@@ -160,5 +159,5 @@ export const createEditPointTemplate = (tripEvent = {}) => {
       ${offersTemplate}
       ${descriptionTemplate}
     </section>
-  </form>`
+  </form>`;
 };

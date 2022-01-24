@@ -11,6 +11,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const editDateTemplate = (date) => {
-  const dateFormat = dayjs(date).format('DD/MM/YY') + " " + dayjs(date).format('HH:mm');
+  const dateFormat = `${dayjs(date).format('DD/MM/YY')} ${dayjs(date).format('HH:mm')}`;
   return dateFormat;
 };
