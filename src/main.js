@@ -7,6 +7,7 @@ import {createListFrameTemplate } from './view/list-frame.js';
 import {createListItemTemplate } from './view/list-item.js';
 import {renderTemplate, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
+import {generateFilter} from './mock/filter.js';
 
 const POINT_COUNT = 15;
 
@@ -31,6 +32,6 @@ const renderTripEvents = (container)=>{
 };
 
 renderTemplate(document.querySelector('.trip-controls__navigation'), createSiteMenuTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(generateFilter), RenderPosition.BEFOREEND);
 
 renderTripEvents(document.querySelector('.trip-events'));
