@@ -9,11 +9,22 @@ import {renderTemplate, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
 import {generateSort} from './mock/sort.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.css';
 
 const POINT_COUNT = 15;
 
-let _currentData = null;
+const flatPickerSettings = {
+  enableTime: true,
+  dateFormat: 'Y/m/d H:i',
+};
 
+const attachFlicker = (container)=>{
+  flatpickr(container.querySelector('#event-start-time-1'),flatPickerSettings);
+  flatpickr(container.querySelector('#event-end-time-1'),flatPickerSettings);
+};
+
+let _currentData = null;
 const getCurrentData = ()=>{
   if(_currentData === null){
     _currentData = Array.from({length:POINT_COUNT},generateEvent);
@@ -21,10 +32,13 @@ const getCurrentData = ()=>{
   return _currentData;
 };
 
-const createItemTemplate = (editing, item)=> editing?createEditPointTemplate(item):createPointTemplate(item);
-
 const renderItem = (container, editing, item)=>{
-  renderTemplate(container,createListItemTemplate(createItemTemplate(editing, item)),RenderPosition.BEFOREEND);
+  if(editing){
+    renderTemplate(container,createListItemTemplate(createEditPointTemplate(item)),RenderPosition.BEFOREEND);
+    attachFlicker(container);
+  } else{
+    renderTemplate(container,createListItemTemplate(createPointTemplate(item)),RenderPosition.BEFOREEND);
+  }
 };
 
 const renderItems = (container)=>{
