@@ -12,14 +12,23 @@ import {generateSort} from './mock/sort.js';
 
 const POINT_COUNT = 15;
 
-const createItemTemplate = (editing)=> editing?createEditPointTemplate(generateEvent()):createPointTemplate(generateEvent());
+let _currentData = null;
 
-const renderItem = (container, editing)=>{
-  renderTemplate(container,createListItemTemplate(createItemTemplate(editing)),RenderPosition.BEFOREEND);
+const getCurrentData = ()=>{
+  if(_currentData === null){
+    _currentData = Array.from({length:POINT_COUNT},generateEvent);
+  }
+  return _currentData;
+};
+
+const createItemTemplate = (editing, item)=> editing?createEditPointTemplate(item):createPointTemplate(item);
+
+const renderItem = (container, editing, item)=>{
+  renderTemplate(container,createListItemTemplate(createItemTemplate(editing, item)),RenderPosition.BEFOREEND);
 };
 
 const renderItems = (container)=>{
-  Array.from({length:POINT_COUNT+1}).forEach((_,ix)=>renderItem(container,ix===0));
+  getCurrentData().forEach((item,ix)=>renderItem(container,ix===0, item));
 };
 
 const renderList = (container)=>{

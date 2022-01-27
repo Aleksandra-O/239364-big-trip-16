@@ -30,7 +30,7 @@ const createDestination = (destination, places) => {
   if (destination === null) {
     return '';
   } else {
-    return `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+    return `<input autocomplete="off" class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
     <datalist id="destination-list-1">
       ${places.map((place) => `<option value="${place}"></option>`).join('')}
     </datalist>`;
@@ -146,7 +146,7 @@ export const createEditPointTemplate = (tripEvent = {}) => {
         <label class="visually-hidden" for="event-end-time-1">To</label>
         <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
       </div>-->
-      
+
       ${priceTemplate}
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
