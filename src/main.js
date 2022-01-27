@@ -8,6 +8,7 @@ import {createListItemTemplate } from './view/list-item.js';
 import {renderTemplate, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
+import {generateSort} from './mock/sort.js';
 
 const POINT_COUNT = 15;
 
@@ -27,7 +28,7 @@ const renderList = (container)=>{
 };
 
 const renderTripEvents = (container)=>{
-  renderTemplate(container, createSiteSortTemplate(), RenderPosition.BEFOREEND);
+  renderTemplate(container, createSiteSortTemplate(generateSort), RenderPosition.BEFOREEND);
   renderList(container);
 };
 
