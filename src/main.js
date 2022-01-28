@@ -5,21 +5,47 @@ import {createEditPointTemplate} from './view/edit-point-view.js';
 import {createPointTemplate} from './view/point-view.js';
 import {createListFrameTemplate } from './view/list-frame.js';
 import {createListItemTemplate } from './view/list-item.js';
+import {getTripInfo } from './view/all-trip.js';
 import {renderTemplate, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
 import {generateSort} from './mock/sort.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.css';
+
+const flatPickerSettings = {
+  enableTime: true,
+  dateFormat: 'd/m/y H:i',
+};
+
+const attachFlicker = (container)=>{
+  flatpickr(container.querySelector('#event-start-time-1'),flatPickerSettings);
+  flatpickr(container.querySelector('#event-end-time-1'),flatPickerSettings);
+};
 
 const POINT_COUNT = 15;
 
-const createItemTemplate = (editing)=> editing?createEditPointTemplate(generateEvent()):createPointTemplate(generateEvent());
+let _currentData = null;
+const getCurrentData = ()=>{
+  if(_currentData === null){
+    _currentData = Array.from({length:POINT_COUNT},generateEvent).sort(function(a,b) {
+      return new Date(a.dateFrom) - new Date(b.dateFrom);
+    });
+  }
+  return _currentData;
+};
 
-const renderItem = (container, editing)=>{
-  renderTemplate(container,createListItemTemplate(createItemTemplate(editing)),RenderPosition.BEFOREEND);
+const renderItem = (container, editing, item)=>{
+  if(editing){
+    renderTemplate(container,createListItemTemplate(createEditPointTemplate(item)),RenderPosition.BEFOREEND);
+    attachFlicker(container);
+  } else{
+    renderTemplate(container,createListItemTemplate(createPointTemplate(item)),RenderPosition.BEFOREEND);
+  }
 };
 
 const renderItems = (container)=>{
-  Array.from({length:POINT_COUNT+1}).forEach((_,ix)=>renderItem(container,ix===0));
+  getCurrentData().forEach((item,ix)=>renderItem(container,ix===0, item));
 };
 
 const renderList = (container)=>{
@@ -32,6 +58,7 @@ const renderTripEvents = (container)=>{
   renderList(container);
 };
 
+renderTemplate(document.querySelector('.trip-main'), getTripInfo(getCurrentData()), RenderPosition.AFTERBEGIN);
 renderTemplate(document.querySelector('.trip-controls__navigation'), createSiteMenuTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(generateFilter), RenderPosition.BEFOREEND);
 
