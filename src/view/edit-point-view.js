@@ -1,5 +1,15 @@
 import {PLACES, POINTTYPES} from '../const.js';
 import {editDateTemplate} from '../utils.js';
+import {createElement} from '../render.js';
+
+const BLANK_EVENT = {
+  type: POINTTYPES[0],
+  dateFrom: '2019-07-10T22:55:56.845Z',
+  dateTo: '2019-07-11T11:22:13.375Z',
+  price: 1100,
+  offers: null,
+  destination: null,
+};
 
 const createTypeList = (types) => (
   `<div class="event__type-list">
@@ -102,17 +112,8 @@ const createTime = (dateFrom, dateTo) => (`<div class="event__field-group  event
   </div>`
 );
 
-export const createEditPointTemplate = (tripEvent = {}) => {
-
-  const {
-    type = 'bus',
-    dateFrom = '2019-07-10T22:55:56.845Z',
-    dateTo = '2019-07-11T11:22:13.375Z',
-    price = 1100,
-    isFavorite = false,
-    offers = null,
-    destination = null,
-  } = tripEvent;
+const createEditPointTemplate = (tripEvent) => {
+  const {type, dateFrom, dateTo, price, offers, destination} = tripEvent;
 
   const priceTemplate = createPrice(price);
   const destinationTemplate = createDestination(destination, PLACES);
@@ -121,7 +122,8 @@ export const createEditPointTemplate = (tripEvent = {}) => {
   const typeListTemplate = createTypeList(POINTTYPES);
   const timeTemplate = createTime(dateFrom, dateTo);
 
-  return   `<form class="event event--edit" action="#" method="post">
+  return `<li class="trip-events__item">
+  <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -152,5 +154,31 @@ export const createEditPointTemplate = (tripEvent = {}) => {
       ${offersTemplate}
       ${descriptionTemplate}
     </section>
-  </form>`;
+  </form>
+  </li>`;
 };
+
+export default class EventEditView {
+  #element = null;
+  #tripEvent = null;
+
+  constructor(tripEvent = BLANK_EVENT) {
+    this.#tripEvent = tripEvent;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEditPointTemplate(this.#tripEvent);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

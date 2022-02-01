@@ -1,15 +1,13 @@
-import {createSiteMenuTemplate} from './view/site-menu-view.js';
-import {createSiteFilterTemplate} from './view/site-filter-view.js';
-import {createSiteSortTemplate} from './view/site-sort-view.js';
-import {createEditPointTemplate} from './view/edit-point-view.js';
-import {createPointTemplate} from './view/point-view.js';
-import {createListFrameTemplate } from './view/list-frame.js';
-import {createListItemTemplate } from './view/list-item.js';
-import {getTripInfo } from './view/all-trip.js';
-import {renderTemplate, RenderPosition} from './render.js';
+import SiteMenuView from './view/site-menu-view.js';
+import FilterView from './view/site-filter-view.js';
+import SortView from './view/site-sort-view.js';
+import EventEditView from './view/edit-point-view.js';
+import EventView from './view/point-view.js';
+import ListView from './view/list-frame.js';
+import TripInfo from './view/all-trip.js';
+import {render, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
-import {generateSort} from './mock/sort.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 
@@ -35,31 +33,50 @@ const getCurrentData = ()=>{
   return _currentData;
 };
 
-const renderItem = (container, editing, item)=>{
-  if(editing){
-    renderTemplate(container,createListItemTemplate(createEditPointTemplate(item)),RenderPosition.BEFOREEND);
+const renderItem = (container, item)=>{
+  const eventTemplate = new EventView(item);
+  const eventEditTemplate = new EventEditView(item);
+
+  const replaceCardToForm = () => {
+    container.replaceChild(eventEditTemplate.element, eventTemplate.element);
+  };
+  const replaceFormToCard = () => {
+    container.replaceChild(eventTemplate.element, eventEditTemplate.element);
+  };
+
+  eventTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
     attachFlicker(container);
-  } else{
-    renderTemplate(container,createListItemTemplate(createPointTemplate(item)),RenderPosition.BEFOREEND);
-  }
+  });
+
+  eventEditTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceFormToCard();
+  });
+
+  eventEditTemplate.element.querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(container, eventTemplate.element, RenderPosition.BEFOREEND);
 };
 
 const renderItems = (container)=>{
-  getCurrentData().forEach((item,ix)=>renderItem(container,ix===0, item));
+  getCurrentData().forEach((item)=>renderItem(container,item));
 };
 
 const renderList = (container)=>{
-  renderTemplate(container, createListFrameTemplate(), RenderPosition.BEFOREEND);
+  render(container, new ListView().element, RenderPosition.BEFOREEND);
   renderItems(container.querySelector('.trip-events__list'));
 };
 
 const renderTripEvents = (container)=>{
-  renderTemplate(container, createSiteSortTemplate(generateSort), RenderPosition.BEFOREEND);
+  render(container, new SortView().element, RenderPosition.BEFOREEND);
   renderList(container);
 };
 
-renderTemplate(document.querySelector('.trip-main'), getTripInfo(getCurrentData()), RenderPosition.AFTERBEGIN);
-renderTemplate(document.querySelector('.trip-controls__navigation'), createSiteMenuTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(document.querySelector('.trip-controls__filters'), createSiteFilterTemplate(generateFilter), RenderPosition.BEFOREEND);
+render(document.querySelector('.trip-main'), new TripInfo(getCurrentData()).element, RenderPosition.AFTERBEGIN);
+render(document.querySelector('.trip-controls__navigation'), new SiteMenuView().element, RenderPosition.BEFOREEND);
+render(document.querySelector('.trip-controls__filters'), new FilterView(generateFilter).element, RenderPosition.BEFOREEND);
 
 renderTripEvents(document.querySelector('.trip-events'));

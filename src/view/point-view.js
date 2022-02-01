@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import {createElement} from '../render.js';
 
-export const createPointTemplate = (tripEvent) => {
+const createPointTemplate = (tripEvent) => {
   const {price, type, destination, dateFrom, dateTo, isFavorite, offers} = tripEvent;
 
   const visDate = dayjs(dateFrom).format('MMM D');
@@ -47,7 +48,8 @@ ${options.map((option) => {
     }
   };
 
-  return `<div class="event">
+  return `<li class="trip-events__item">
+  <div class="event">
         <time class="event__date" datetime="${hidDate}">${visDate}</time>
         <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -82,5 +84,30 @@ ${options.map((option) => {
         <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
         </button>
-    </div>`;
+    </div>
+  </li>`;
 };
+export default class EventView {
+  #element = null;
+  #tripEvent = null;
+
+  constructor(tripEvent) {
+    this.#tripEvent = tripEvent;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPointTemplate(this.#tripEvent);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

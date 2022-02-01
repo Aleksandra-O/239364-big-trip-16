@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {createElement} from '../render.js';
 
 const getAllTrip = (tripPoints) => {
   let strAllTrip = '';
@@ -61,7 +62,7 @@ const getTotalTripPrice = (tripPoints) => {
   return totalPrice;
 };
 
-export const getTripInfo = (tripPoints) => (
+const getTripInfo = (tripPoints) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${getAllTrip(tripPoints)}</h1>
@@ -74,3 +75,28 @@ export const getTripInfo = (tripPoints) => (
     </p>
   </section>`
 );
+
+export default class TripInfo {
+  #element = null;
+  #tripEvent = null;
+
+  constructor(tripEvent) {
+    this.#tripEvent = tripEvent;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return getTripInfo(this.#tripEvent);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
