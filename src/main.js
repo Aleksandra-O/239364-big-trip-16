@@ -5,6 +5,7 @@ import EventEditView from './view/edit-point-view.js';
 import EventView from './view/point-view.js';
 import ListView from './view/list-frame.js';
 import TripInfo from './view/all-trip.js';
+import NoEventView from './view/no-event-view.js';
 import {render, RenderPosition} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
@@ -44,9 +45,18 @@ const renderItem = (container, item)=>{
     container.replaceChild(eventTemplate.element, eventEditTemplate.element);
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   eventTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
     attachFlicker(container);
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   eventEditTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
@@ -56,6 +66,7 @@ const renderItem = (container, item)=>{
   eventEditTemplate.element.querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(container, eventTemplate.element, RenderPosition.BEFOREEND);
@@ -75,8 +86,14 @@ const renderTripEvents = (container)=>{
   renderList(container);
 };
 
-render(document.querySelector('.trip-main'), new TripInfo(getCurrentData()).element, RenderPosition.AFTERBEGIN);
+if (getCurrentData().length !== 0) {
+  render(document.querySelector('.trip-main'), new TripInfo(getCurrentData()).element, RenderPosition.AFTERBEGIN);
+}
 render(document.querySelector('.trip-controls__navigation'), new SiteMenuView().element, RenderPosition.BEFOREEND);
 render(document.querySelector('.trip-controls__filters'), new FilterView(generateFilter).element, RenderPosition.BEFOREEND);
 
-renderTripEvents(document.querySelector('.trip-events'));
+if (getCurrentData().length === 0) {
+  render(document.querySelector('.trip-events'), new NoEventView().element, RenderPosition.BEFOREEND);
+} else {
+  renderTripEvents(document.querySelector('.trip-events'));
+}
