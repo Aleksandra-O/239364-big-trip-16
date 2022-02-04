@@ -23,7 +23,14 @@ const attachFlicker = (container)=>{
 
 const POINT_COUNT = 15;
 
+/**
+ * @type {import('./mock/trip-event.js').TripEvent[]}
+ */
 let _currentData = null;
+/**
+ *
+ * @returns {import('./mock/trip-event.js').TripEvent[]}
+ */
 const getCurrentData = ()=>{
   if(_currentData === null){
     _currentData = Array.from({length:POINT_COUNT},generateEvent).sort((a,b)=>a.dateFrom - b.dateFrom);
