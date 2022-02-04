@@ -104,9 +104,19 @@ ${options.map((option) => {
   </li>`;
 };
 export default class EventView {
+  /**
+   * @type {HTMLElement | null}
+   */
   #element = null;
+  /**
+   * @type {import('../mock/trip-event.js').TripEvent}
+   */
   #tripEvent = null;
 
+  /**
+   *
+   * @param {import('../mock/trip-event.js').TripEvent} tripEvent
+   */
   constructor(tripEvent) {
     this.#tripEvent = tripEvent;
   }
