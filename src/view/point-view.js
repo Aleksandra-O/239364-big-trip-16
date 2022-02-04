@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import {createElement} from '../render.js';
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent} tripEvent
+ * @returns {string} HTML разметку для точки маршрута
+ */
 const createPointTemplate = (tripEvent) => {
   const {price, type, destination, dateFrom, dateTo, isFavorite, offers} = tripEvent;
 
@@ -9,6 +14,12 @@ const createPointTemplate = (tripEvent) => {
   const startTime = dayjs(dateFrom).format('HH:mm');
   const finishTime = dayjs(dateTo).format('HH:mm');
   const gapDate = new Date(+dateTo-dateFrom-10800000);
+
+  /**
+   *
+   * @param {number} gapTime
+   * @returns {string} количество часов и минут
+   */
   const formatGapTime = (gapTime) => {
     if (gapTime < 3600000) {
       const intervalMin = String(dayjs(gapTime).format('mm'));
@@ -28,6 +39,11 @@ const createPointTemplate = (tripEvent) => {
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
+  /**
+     *
+     * @param {import('../mock/trip-event.js').Offer[] | null} options
+     * @returns {string} HTML разметка предложений
+     */
   const isCheckedOffer = (options) => {
     if (options === null) {
       return '';
