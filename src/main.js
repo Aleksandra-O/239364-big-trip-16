@@ -26,9 +26,7 @@ const POINT_COUNT = 15;
 let _currentData = null;
 const getCurrentData = ()=>{
   if(_currentData === null){
-    _currentData = Array.from({length:POINT_COUNT},generateEvent).sort(function(a,b) {
-      return new Date(a.dateFrom) - new Date(b.dateFrom);
-    });
+    _currentData = Array.from({length:POINT_COUNT},generateEvent).sort((a,b)=>a.dateFrom - b.dateFrom);
   }
   return _currentData;
 };
