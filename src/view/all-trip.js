@@ -8,10 +8,10 @@ import {createElement} from '../render.js';
  */
 const getAllTrip = (tripPoints) => {
   let strAllTrip = '';
-  const arrPlaces = tripPoints.map((tripPoint,i,arrPlaces) => {
+  const arrPlaces = tripPoints.map((tripPoint,i,currentPlaceArray) => {
     const item = tripPoint.destination.name;
     if (i > 0) {
-      if (item === arrPlaces[i-1].destination.name) {
+      if (item === currentPlaceArray[i-1].destination.name) {
         return null;
       } else {
         return item;
