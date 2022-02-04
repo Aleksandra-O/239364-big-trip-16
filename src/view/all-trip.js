@@ -20,9 +20,7 @@ const getAllTrip = (tripPoints) => {
       return item;
     }
   });
-  strAllTrip = arrPlaces.filter(function(el) {
-    return el !== null;
-  }).join(' &mdash; ');
+  strAllTrip = arrPlaces.filter((el)=> el !== null).join(' &mdash; ');
   return strAllTrip;
 };
 
