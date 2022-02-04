@@ -35,7 +35,7 @@ const getAllTime = (tripPoints) => {
     month: dayjs(newTripArr[0].dateFrom).format('MMM'),
     day: dayjs(newTripArr[0].dateFrom).format('D')
   };
-  newTripArr = tripPoints.slice().sort(function(a,b) {
+  newTripArr = tripPoints.slice().sort((a,b) => {
     return new Date(b.dateTo) - new Date(a.dateTo);
   });
   const lastDate = {
