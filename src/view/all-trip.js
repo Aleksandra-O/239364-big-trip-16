@@ -41,7 +41,7 @@ const getAllTime = (tripPoints) => {
     day: dayjs(newTripArr[0].dateTo).format('D')
   };
 
-  const strAllTime = `${firstDate.month}&nbsp;${firstDate.day}&nbsp;&mdash;&nbsp;${lastDate.month!==null?lastDate.month+' ':''}${lastDate.day}`;
+  const strAllTime = `${firstDate.month}&nbsp;${firstDate.day}&nbsp;&mdash;&nbsp;${lastDate.month!==null?`${lastDate.month} `:''}${lastDate.day}`;
 
   return strAllTime;
 };
