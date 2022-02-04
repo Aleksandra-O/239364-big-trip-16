@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import {createElement} from '../render.js';
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent[]} tripPoints
+ * @returns {string} первую и последнюю точку на маршруте
+ */
 const getAllTrip = (tripPoints) => {
   let strAllTrip = '';
   const arrPlaces = tripPoints.map((tripPoint,i,arrPlaces) => {
@@ -62,6 +67,11 @@ const getTotalTripPrice = (tripPoints) => {
   return totalPrice;
 };
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent[]} tripPoints
+ * @returns {string} html markup
+ */
 const getTripInfo = (tripPoints) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
@@ -77,9 +87,19 @@ const getTripInfo = (tripPoints) => (
 );
 
 export default class TripInfo {
+  /**
+   * @type {HTMLElement | null}
+   */
   #element = null;
+  /**
+   * @type {import('../mock/trip-event.js').TripEvent[]}
+   */
   #tripEvent = null;
 
+  /**
+   *
+   * @param {import('../mock/trip-event.js').TripEvent[]} tripEvent
+   */
   constructor(tripEvent) {
     this.#tripEvent = tripEvent;
   }
