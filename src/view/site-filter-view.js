@@ -37,6 +37,10 @@ export default class FilterView {
   #element = null;
   #filters = null;
 
+  /**
+   *
+   * @param {string[]} filters
+   */
   constructor(filters) {
     this.#filters = filters;
   }
