@@ -1,15 +1,21 @@
 import {createElement} from '../render.js';
 
+/**
+ *
+ * @param {string} filter
+ * @param {boolean} isChecked
+ * @returns
+ */
 const createFilterItemTemplate = (filter, isChecked) => {
   const name = filter;
 
   return (
     `<div class="trip-filters__filter">
-      <input 
-        id="filter-${name}" 
-        class="trip-filters__filter-input visually-hidden" 
-        type="radio" 
-        name="trip-filter" 
+      <input
+        id="filter-${name}"
+        class="trip-filters__filter-input visually-hidden"
+        type="radio"
+        name="trip-filter"
         value="${name}"
         ${isChecked ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
@@ -31,6 +37,10 @@ export default class FilterView {
   #element = null;
   #filters = null;
 
+  /**
+   *
+   * @param {string[]} filters
+   */
   constructor(filters) {
     this.#filters = filters;
   }

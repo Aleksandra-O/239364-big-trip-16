@@ -2,12 +2,56 @@ import dayjs from 'dayjs';
 import {PLACES, POINTTYPES} from '../const.js';
 import {getRandomInteger} from '../utils.js';
 
+/**
+ *
+ * @typedef {object} Picture
+   @property {string} src
+   @property {string} description
+ */
+
+/**
+ * @typedef {object} Destination
+ {
+  @property {string | null}  description: generateDescription(),
+  @property {string}  name: destinations[randomIndex],
+  @property {Picture [] | null}  pictures: generatePhotos()
+  }
+ */
+
+/**
+ * @typedef {object} Offer
+   @property {number} id
+   @property {string} title
+   @property {number} price
+   @property {boolean} isChecked
+ */
+
+/**
+ * @typedef {object} TripEvent
+   @property {string} type
+   @property {Date} dateFrom
+   @property {Date} dateTo
+   @property {number} price
+   @property {boolean} isFavorite
+   @property {Offer[] | null} offers,
+   @property {Destination} destination: generateDestination(),
+
+ */
+
+/**
+ *
+ * @returns {string}
+ */
 const generateType = () => {
   const types = POINTTYPES;
   const randomIndex = getRandomInteger(0, types.length - 1);
   return types[randomIndex];
 };
 
+/**
+ *
+ * @returns {Offer[] | null}
+ */
 const generateOffers = () => {
   const isOptions = Boolean(getRandomInteger(0, 1));
 
@@ -34,11 +78,19 @@ const generateOffers = () => {
   return options;
 };
 
+/**
+ *
+ * @returns {Destination}
+ */
 const generateDestination = () => {
   const destinations = PLACES;
 
   const randomIndex = getRandomInteger(0, destinations.length - 1);
 
+  /**
+   *
+   * @returns {string}
+   */
   const generateDescription = () => {
     const isDescription = Boolean(getRandomInteger(0, 1));
 
@@ -71,6 +123,10 @@ const generateDestination = () => {
     return description;
   };
 
+  /**
+   *
+   * @returns {Picture[] | null}
+   */
   const generatePhotos = () => {
     const isPhotos = Boolean(getRandomInteger(0, 1));
 
@@ -104,6 +160,10 @@ const generateDestination = () => {
   return destination;
 };
 
+/**
+ *
+ * @returns Date
+ */
 const generateStartDate = () => {
   const maxDaysGap = 30;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
@@ -113,6 +173,11 @@ const generateStartDate = () => {
   return startDate;
 };
 
+/**
+ *
+ * @param {Date} startDate
+ * @returns {Date}
+ */
 const genegateFinishDate = (startDate) => {
   const generateDateGap = getRandomInteger(0, 86400000);
   const finishDateMs = +startDate + generateDateGap;
@@ -122,6 +187,10 @@ const genegateFinishDate = (startDate) => {
 
 const maxPriceGap = 1250;
 
+/**
+ *
+ * @returns {TripEvent}
+ */
 export const generateEvent = () => {
   const offers = generateOffers();
   const dateFrom = generateStartDate();

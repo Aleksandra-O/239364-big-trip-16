@@ -1,12 +1,17 @@
 import dayjs from 'dayjs';
 import {createElement} from '../render.js';
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent[]} tripPoints
+ * @returns {string} первую и последнюю точку на маршруте
+ */
 const getAllTrip = (tripPoints) => {
   let strAllTrip = '';
-  const arrPlaces = tripPoints.map((tripPoint,i,arrPlaces) => {
+  const arrPlaces = tripPoints.map((tripPoint,i,currentPlaceArray) => {
     const item = tripPoint.destination.name;
     if (i > 0) {
-      if (item === arrPlaces[i-1].destination.name) {
+      if (item === currentPlaceArray[i-1].destination.name) {
         return null;
       } else {
         return item;
@@ -15,29 +20,28 @@ const getAllTrip = (tripPoints) => {
       return item;
     }
   });
-  strAllTrip = arrPlaces.filter(function(el) {
-    return el !== null;
-  }).join(' &mdash; ');
+  strAllTrip = arrPlaces.filter((el)=> el !== null).join(' &mdash; ');
   return strAllTrip;
 };
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent[]} tripPoints
+ * @returns
+ */
 const getAllTime = (tripPoints) => {
-  let newTripArr = tripPoints.slice().sort(function(a,b) {
-    return new Date(a.dateFrom) - new Date(b.dateFrom);
-  });
+  let newTripArr = tripPoints.slice().sort((a,b) => a.dateFrom - b.dateFrom);
   const firstDate = {
     month: dayjs(newTripArr[0].dateFrom).format('MMM'),
     day: dayjs(newTripArr[0].dateFrom).format('D')
   };
-  newTripArr = tripPoints.slice().sort(function(a,b) {
-    return new Date(b.dateTo) - new Date(a.dateTo);
-  });
+  newTripArr = tripPoints.slice().sort((a,b) => b.dateTo - a.dateTo);
   const lastDate = {
     month: dayjs(newTripArr[0].dateTo).format('MMM')===firstDate.month?null:dayjs(newTripArr[0].dateTo).format('MMM'),
     day: dayjs(newTripArr[0].dateTo).format('D')
   };
 
-  const strAllTime = `${firstDate.month}&nbsp;${firstDate.day}&nbsp;&mdash;&nbsp;${lastDate.month!==null?lastDate.month+' ':''}${lastDate.day}`;
+  const strAllTime = `${firstDate.month}&nbsp;${firstDate.day}&nbsp;&mdash;&nbsp;${lastDate.month!==null?`${lastDate.month} `:''}${lastDate.day}`;
 
   return strAllTime;
 };
@@ -62,6 +66,11 @@ const getTotalTripPrice = (tripPoints) => {
   return totalPrice;
 };
 
+/**
+ *
+ * @param {import('../mock/trip-event.js').TripEvent[]} tripPoints
+ * @returns {string} html markup
+ */
 const getTripInfo = (tripPoints) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
@@ -77,9 +86,19 @@ const getTripInfo = (tripPoints) => (
 );
 
 export default class TripInfo {
+  /**
+   * @type {HTMLElement | null}
+   */
   #element = null;
+  /**
+   * @type {import('../mock/trip-event.js').TripEvent[]}
+   */
   #tripEvent = null;
 
+  /**
+   *
+   * @param {import('../mock/trip-event.js').TripEvent[]} tripEvent
+   */
   constructor(tripEvent) {
     this.#tripEvent = tripEvent;
   }
