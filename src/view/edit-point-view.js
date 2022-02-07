@@ -1,6 +1,6 @@
 import {PLACES, POINTTYPES} from '../const.js';
 import {editDateTemplate} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const BLANK_EVENT = {
   type: POINTTYPES[0],
@@ -158,27 +158,35 @@ const createEditPointTemplate = (tripEvent) => {
   </li>`;
 };
 
-export default class EventEditView {
-  #element = null;
+export default class EventEditView extends AbstractView {
   #tripEvent = null;
 
   constructor(tripEvent = BLANK_EVENT) {
+    super();
     this.#tripEvent = tripEvent;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEditPointTemplate(this.#tripEvent);
   }
 
-  removeElement() {
-    this.#element = null;
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormClickHandler = (callback) => {
+    this._callback.formClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+  }
+
+  #formClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formClick();
   }
 }

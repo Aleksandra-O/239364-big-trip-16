@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 /**
  *
@@ -103,11 +103,7 @@ ${options.map((option) => {
     </div>
   </li>`;
 };
-export default class EventView {
-  /**
-   * @type {HTMLElement | null}
-   */
-  #element = null;
+export default class EventView extends AbstractView {
   /**
    * @type {import('../mock/trip-event.js').TripEvent}
    */
@@ -118,22 +114,20 @@ export default class EventView {
    * @param {import('../mock/trip-event.js').TripEvent} tripEvent
    */
   constructor(tripEvent) {
+    super();
     this.#tripEvent = tripEvent;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createPointTemplate(this.#tripEvent);
   }
 
-  removeElement() {
-    this.#element = null;
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  }
+
+  #editClickHandler = () => {
+    this._callback.editClick();
   }
 }

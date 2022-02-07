@@ -6,7 +6,7 @@ import EventView from './view/point-view.js';
 import ListView from './view/list-frame.js';
 import TripInfo from './view/all-trip.js';
 import NoEventView from './view/no-event-view.js';
-import {render, RenderPosition} from './render.js';
+import {render, RenderPosition, replace} from './render.js';
 import {generateEvent} from './mock/trip-event.js';
 import {generateFilter} from './mock/filter.js';
 import flatpickr from 'flatpickr';
@@ -44,10 +44,10 @@ const renderItem = (container, item)=>{
   const eventEditTemplate = new EventEditView(item);
 
   const replaceCardToForm = () => {
-    container.replaceChild(eventEditTemplate.element, eventTemplate.element);
+    replace(eventEditTemplate, eventTemplate);
   };
   const replaceFormToCard = () => {
-    container.replaceChild(eventTemplate.element, eventEditTemplate.element);
+    replace(eventTemplate, eventEditTemplate);
   };
 
   const onEscKeyDown = (evt) => {
@@ -58,23 +58,23 @@ const renderItem = (container, item)=>{
     }
   };
 
-  eventTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventTemplate.setEditClickHandler(() => {
     replaceCardToForm();
     attachFlicker(container);
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditTemplate.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceFormToCard();
-  });
-
-  eventEditTemplate.element.querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditTemplate.setFormClickHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(container, eventTemplate.element, RenderPosition.BEFOREEND);
+  eventEditTemplate.setFormSubmitHandler(() => {
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(container, eventTemplate, RenderPosition.BEFOREEND);
 };
 
 const renderItems = (container)=>{
@@ -82,23 +82,23 @@ const renderItems = (container)=>{
 };
 
 const renderList = (container)=>{
-  render(container, new ListView().element, RenderPosition.BEFOREEND);
+  render(container, new ListView(), RenderPosition.BEFOREEND);
   renderItems(container.querySelector('.trip-events__list'));
 };
 
 const renderTripEvents = (container)=>{
-  render(container, new SortView().element, RenderPosition.BEFOREEND);
+  render(container, new SortView(), RenderPosition.BEFOREEND);
   renderList(container);
 };
 
 if (getCurrentData().length !== 0) {
-  render(document.querySelector('.trip-main'), new TripInfo(getCurrentData()).element, RenderPosition.AFTERBEGIN);
+  render(document.querySelector('.trip-main'), new TripInfo(getCurrentData()), RenderPosition.AFTERBEGIN);
 }
-render(document.querySelector('.trip-controls__navigation'), new SiteMenuView().element, RenderPosition.BEFOREEND);
-render(document.querySelector('.trip-controls__filters'), new FilterView(generateFilter).element, RenderPosition.BEFOREEND);
+render(document.querySelector('.trip-controls__navigation'), new SiteMenuView(), RenderPosition.BEFOREEND);
+render(document.querySelector('.trip-controls__filters'), new FilterView(generateFilter), RenderPosition.BEFOREEND);
 
 if (getCurrentData().length === 0) {
-  render(document.querySelector('.trip-events'), new NoEventView().element, RenderPosition.BEFOREEND);
+  render(document.querySelector('.trip-events'), new NoEventView(), RenderPosition.BEFOREEND);
 } else {
   renderTripEvents(document.querySelector('.trip-events'));
 }

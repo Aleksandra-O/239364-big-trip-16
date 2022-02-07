@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 /**
  *
@@ -85,37 +85,21 @@ const getTripInfo = (tripPoints) => (
   </section>`
 );
 
-export default class TripInfo {
-  /**
-   * @type {HTMLElement | null}
-   */
-  #element = null;
+export default class TripInfo extends AbstractView {
   /**
    * @type {import('../mock/trip-event.js').TripEvent[]}
    */
   #tripEvent = null;
 
   /**
-   *
    * @param {import('../mock/trip-event.js').TripEvent[]} tripEvent
    */
   constructor(tripEvent) {
+    super();
     this.#tripEvent = tripEvent;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return getTripInfo(this.#tripEvent);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
